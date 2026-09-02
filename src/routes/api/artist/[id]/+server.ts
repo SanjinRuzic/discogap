@@ -2,6 +2,7 @@ import { DiscogsClient } from '@lionralfs/discogs-client';
 import { json, type RequestEvent } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import { filterAlbums } from '$lib/services/dataFilter';
+import { calculateYearGap } from '$lib/services/gapCalculator';
 
 const client = new DiscogsClient({
     userAgent: 'Discogap/1.0',
@@ -18,5 +19,6 @@ export async function GET({ params }: RequestEvent) {
 
     const response = await client.database().getArtistReleases(artistId);
     const filteredAlbums = filterAlbums(response.data.releases);
-    return json(filteredAlbums);
+    const albumsWithGaps = calculateYearGap(filteredAlbums);
+    return json(albumsWithGaps);
 }
