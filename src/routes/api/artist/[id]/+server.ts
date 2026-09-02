@@ -1,6 +1,7 @@
 import { DiscogsClient } from '@lionralfs/discogs-client';
 import { json, type RequestEvent } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
+import { filterAlbums } from '$lib/services/dataFilter';
 
 const client = new DiscogsClient({
     userAgent: 'Discogap/1.0',
@@ -15,6 +16,7 @@ export async function GET({ params }: RequestEvent) {
         return json({ error: 'Invalid artistId parameter' }, { status: 400 });
     }
 
-    const releases = await client.database().getArtistReleases(artistId);
-    return json(releases);
+    const response = await client.database().getArtistReleases(artistId);
+    const filteredAlbums = filterAlbums(response.data.releases);
+    return json(filteredAlbums);
 }
