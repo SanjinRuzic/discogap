@@ -58,7 +58,7 @@ function createArtistStore() {
         },
         /** Selects an artist without fetching albums or clearing existing results or statistics. */
         searchArtist: async (artist: any) => {
-            update(state => ({ ...state, selectedArtist: artist}));
+            update(state => ({ ...state, selectedArtist: artist, albums: [], statistics: null}));
         },
         /**
          * Fetches albums for a Discogs artist ID and stores the parsed JSON without
@@ -71,6 +71,9 @@ function createArtistStore() {
             update(state => ({ ...state, loading: true, error: null}));
             try {
                 const response = await fetch(`/api/artist/${encodeURIComponent(artistId)}`);
+                if (!response.ok) {
+                    throw new Error("HTTP error " + response.status);
+                }
                 const albums = await response.json();
             update(state => ({ ...state, albums, loading: false}));
             }
