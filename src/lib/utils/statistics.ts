@@ -10,6 +10,12 @@ export interface AlbumStatistics {
     releaseFrequency: number;
 }
 
+/**
+ * Summarizes album counts and release gaps in years, ignoring null or undefined gaps.
+ * Expects albums ordered by ascending year; activePeriod is the last year minus the
+ * first, and releaseFrequency is albums per year over that span plus one year.
+ * Returns all zeros for no albums, and zero gap statistics when no gaps are present.
+ */
 export function calculateStatistics(albums: AlbumWithGap[]) : AlbumStatistics {
     if (albums.length === 0) {
         return {
@@ -39,6 +45,7 @@ export function calculateStatistics(albums: AlbumWithGap[]) : AlbumStatistics {
 
 }
 
+/** Returns the arithmetic mean of the gaps, in the input units, or zero for an empty list. */
 export function calculateMean(gaps: number[]) : number {
     if (gaps.length === 0) {
         return 0;
@@ -47,6 +54,10 @@ export function calculateMean(gaps: number[]) : number {
     return sum / gaps.length;
 }
 
+/**
+ * Returns the median gap in the input units without modifying the list, or zero
+ * for an empty list. Averages the two middle values for an even number of gaps.
+ */
 export function calculateMedian(gaps: number[]) : number {
     if (gaps.length === 0) {
         return 0;

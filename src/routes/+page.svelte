@@ -4,6 +4,11 @@ import { Music, Search, TrendingUp } from 'lucide-svelte';
 
 let searchQuery = $state('');
 
+/**
+ * Selects a search result, waits for album loading, and updates statistics.
+ * A caught loading failure leaves prior albums available for the calculation.
+ * Rejects if statistics calculation throws, including for a stored JSON error response.
+ */
 async function handleSelectArtist(artist: any) {
     artistStore.searchArtist(artist);
     await artistStore.loadArtistAlbums(artist.id);
